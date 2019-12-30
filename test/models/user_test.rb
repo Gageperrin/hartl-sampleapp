@@ -18,7 +18,7 @@ class UserTest < ActiveSupport::TestCase
   test "email should be present" do
     @user.email = "     "
     assert_not @user.valid?
-  end 
+  end
 
   test "name should not be too long" do
     @user.name = "a" * 51
@@ -28,7 +28,7 @@ class UserTest < ActiveSupport::TestCase
   test "email should not be too long" do
     @user.email = "a" * 244 + "@example.com"
     assert_not @user.valid?
-  end 
+  end
 
   test "email validation should accept valid addresses" do
     valid_addresses = %w[user@example.com USER@foo.COM A_US-ER@foo.bar.org
@@ -49,7 +49,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "email addresses should be unique" do
-    duplicate_user = @user.dup 
+    duplicate_user = @user.dup
     duplicate_user.email = @user.email.upcase
     @user.save
     assert_not duplicate_user.valid?
@@ -76,5 +76,16 @@ class UserTest < ActiveSupport::TestCase
       @user.destroy
     end
   end
+
+  test "should follow and unfollow a user" do
+  michael = users(:michael)
+  archer  = users(:archer)
+  assert_not michael.following?(archer)
+  michael.follow(archer)
+  assert michael.following?(archer)
+  assert archer.followers.include?(michael)
+  michael.unfollow(archer)
+  assert_not michael.following?(archer)
+end
 
 end
